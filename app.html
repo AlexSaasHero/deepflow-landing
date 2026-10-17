@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepFlow - Hub Piattaforma</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 900: '#1e1b4b', 950: '#0b0c14' }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+  <style>
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-[#0b0c14] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-violet-600 selection:text-white relative overflow-x-hidden">
+
+  <!-- BANNER PROVA / LICENZA -->
+  <div id="licenseBanner" class="bg-gradient-to-r from-violet-900/60 via-indigo-900/60 to-violet-900/60 border-b border-violet-500/20 py-2 px-4 text-center text-xs text-violet-200 flex items-center justify-center gap-3 backdrop-blur-md sticky top-0 z-50">
+    <span id="licenseBannerText">⚡ Stai usando la <strong>Demo Interattiva (7 Giorni Gratuiti)</strong></span>
+    <button onclick="openLicenseModal()" class="underline text-white font-semibold hover:text-violet-300 transition">Hai una Key?</button>
+  </div>
+
+  <!-- HEADER -->
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md px-6 py-3.5 sticky top-[37px] z-40">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition" title="Torna alla Landing Page">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        </a>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-lg text-white">DeepFlow</span>
+          <span id="tierProBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold uppercase">
+            7D TRIAL
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="text-right hidden sm:block mr-2">
+          <div id="liveClock" class="text-base font-mono font-semibold text-slate-200">00:00:00</div>
+          <div id="liveDate" class="text-[10px] text-slate-400">--</div>
+        </div>
+        <button onclick="openLicenseModal()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold transition">
+          Attiva Key
+        </button>
+        <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
+           class="lemonsqueezy-button px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold shadow-lg transition">
+          Sblocca a $2.99
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD A SCHERMO UNICO -->
+  <main class="max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+    
+    <!-- COLONNA SINISTRA: Timer & Ranghi -->
+    <div class="lg:col-span-7 flex flex-col gap-5">
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
+            <i data-lucide="timer" class="w-5 h-5 text-violet-400"></i> Focus Timer
+          </h2>
+          <div class="flex gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
+            <button onclick="setTimerPreset(25)" class="preset-btn px-3 py-1 rounded-lg text-slate-300 bg-slate-800 font-medium" data-min="25">25m</button>
+            <button onclick="setTimerPreset(50)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium" data-min="50">50m</button>
+            <button onclick="setTimerPreset(90)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium" data-min="90">90m</button>
+            <button onclick="setTimerPreset(5)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium" data-min="5">5m</button>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-center my-4 relative">
+          <div class="relative w-56 h-56 flex items-center justify-center">
+            <svg class="w-full h-full transform -rotate-90">
+              <circle cx="112" cy="112" r="95" stroke="currentColor" stroke-width="8" class="text-slate-800/60" fill="transparent" />
+              <circle id="timerProgress" cx="112" cy="112" r="95" stroke="currentColor" stroke-width="8" 
+                      class="text-violet-500 transition-all duration-500 ease-out" 
+                      stroke-linecap="round" fill="transparent" stroke-dasharray="596.9" stroke-dashoffset="0" />
+            </svg>
+            <div class="absolute flex flex-col items-center">
+              <span id="timerDisplay" class="font-mono text-5xl font-extrabold text-white">25:00</span>
+              <span id="sessionStatus" class="text-[10px] uppercase tracking-widest text-violet-400 font-bold mt-2">Pronto al Flow</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-4">
+          <button id="toggleTimerBtn" onclick="toggleTimer()" 
+                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-lg hover:brightness-110 transition">
+            <i id="toggleTimerIcon" data-lucide="play" class="w-4 h-4"></i>
+            <span id="toggleTimerText">Inizia Sessione</span>
+          </button>
+          <button onclick="resetTimer()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
+            <i data-lucide="award" class="w-5 h-5 text-amber-400"></i> Rango di Studio
+          </h2>
+          <div class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400" id="tierBadge">Bronzo I</div>
+        </div>
+        <div class="space-y-1.5 mb-4">
+          <div class="flex justify-between text-xs text-slate-400">
+            <span>XP: <b id="xpCurrentDisplay" class="text-violet-400 font-mono">0 XP</b></span>
+            <span>Target: <b id="xpNextDisplay" class="text-slate-400 font-mono">600 XP</b></span>
+          </div>
+          <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+            <div id="xpBar" class="bg-gradient-to-r from-violet-500 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center pt-2 border-t border-slate-800/60">
+          <div class="bg-slate-950/50 p-2 rounded-xl border border-slate-800/50">
+            <div class="text-[10px] text-slate-400 uppercase font-bold">Ore Totali</div>
+            <div id="totalHoursDisplay" class="text-base font-mono font-bold text-slate-100">0.0h</div>
+          </div>
+          <div class="bg-slate-950/50 p-2 rounded-xl border border-slate-800/50">
+            <div class="text-[10px] text-slate-400 uppercase font-bold">Sessioni</div>
+            <div id="completedSessionsDisplay" class="text-base font-mono font-bold text-slate-100">0</div>
+          </div>
+          <div class="bg-slate-950/50 p-2 rounded-xl border border-slate-800/50">
+            <div class="text-[10px] text-slate-400 uppercase font-bold">Streak</div>
+            <div id="streakDisplay" class="text-base font-bold text-amber-400">1 G</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNA DESTRA: 40Hz Audio & Task -->
+    <div class="lg:col-span-5 flex flex-col gap-5">
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
+            <div class="w-2.5 h-2.5 rounded-full bg-violet-400 animate-ping"></div> 40 Hz Gamma Player
+          </h2>
+          <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-violet-300 font-mono">Real-Time</span>
+        </div>
+        <div class="h-20 w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 mb-4 flex items-center justify-center relative">
+          <canvas id="visualizerCanvas" class="w-full h-full"></canvas>
+          <div id="audioStatusPlaceholder" class="absolute text-xs text-slate-500 font-medium">Audio Spento</div>
+        </div>
+        <div class="space-y-3">
+          <button id="toggleAudioBtn" onclick="toggleAudio()" 
+                  class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-violet-600 text-white font-semibold text-xs transition border border-slate-700">
+            Avvia Onde 40 Hz
+          </button>
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs text-slate-400">
+              <span>Volume</span>
+              <span id="volumeVal" class="font-mono">40%</span>
+            </div>
+            <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.4" oninput="setAudioVolume(this.value)" class="w-full accent-violet-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
+            <span class="text-xs text-slate-200">Rumore Marrone (Deep Masking)</span>
+            <input type="checkbox" id="brownNoiseToggle" onchange="toggleBrownNoise(this.checked)" class="accent-violet-600">
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex-1 flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
+            <i data-lucide="check-square" class="w-5 h-5 text-emerald-400"></i> Obiettivi
+          </h2>
+          <span class="text-xs text-slate-400 font-mono" id="tasksCounter">0/0</span>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <input type="text" id="goalInput" placeholder="Nuovo obiettivo..." onkeydown="if(event.key==='Enter') addGoal()" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-violet-500">
+          <button onclick="addGoal()" class="bg-violet-600 hover:bg-violet-500 text-white px-3 py-1.5 rounded-xl text-xs">+</button>
+        </div>
+        <ul id="goalsList" class="space-y-2 flex-1 overflow-y-auto max-h-[170px] custom-scroll pr-1"></ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODALE LICENSE KEY -->
+  <div id="licenseModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeLicenseModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+      <h3 class="text-lg font-bold text-white mb-1">Attiva Licenza DeepFlow</h3>
+      <p class="text-xs text-slate-400 mb-4">Inserisci la chiave ricevuta via email per sbloccare l'accesso permanente.</p>
+      <div class="space-y-3">
+        <input type="text" id="licenseKeyInput" placeholder="Inserisci Key..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-200 font-mono uppercase">
+        <div id="licenseMsg" class="text-xs hidden"></div>
+        <div class="flex gap-2">
+          <button onclick="validateLicenseKey()" class="flex-1 py-2.5 rounded-xl bg-violet-600 text-white font-semibold text-xs">Verifica Key</button>
+          <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" class="lemonsqueezy-button px-4 py-2.5 rounded-xl bg-slate-800 text-slate-200 text-xs text-center">Compra ($2.99)</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const RANKS = [
+      { name: "Bronzo I", xp: 0 }, { name: "Bronzo II", xp: 600 }, { name: "Bronzo III", xp: 1200 },
+      { name: "Argento I", xp: 2100 }, { name: "Argento II", xp: 3300 }, { name: "Argento III", xp: 4800 },
+      { name: "Oro I", xp: 6600 }, { name: "Oro II", xp: 9000 }, { name: "Oro III", xp: 12000 },
+      { name: "Platino I", xp: 15600 }, { name: "Platino II", xp: 21000 }, { name: "Platino III", xp: 30000 },
+      { name: "Diamante Focus", xp: 45000 }
+    ];
+    let state = { isPro: false, trialStartedAt: null, totalXp: 0, totalSecondsFocus: 0, completedSessions: 0, streak: 1, lastActiveDate: new Date().toISOString().slice(0, 10), goals: [{ id: 1, text: "Completare capitolo teorico", done: false }] };
+
+    function loadState() {
+      const s = localStorage.getItem('deepflow_state');
+      if (s) { try { state = { ...state, ...JSON.parse(s) }; } catch(e){} }
+      if (!state.trialStartedAt) { state.trialStartedAt = Date.now(); saveState(); }
+      checkTrialStatus(); updateGamification(); renderGoals(); updateTimerDisplay();
+    }
+    function saveState() { localStorage.setItem('deepflow_state', JSON.stringify(state)); }
+
+    function checkTrialStatus() {
+      const banner = document.getElementById('licenseBanner'), bannerText = document.getElementById('licenseBannerText'), badge = document.getElementById('tierProBadge');
+      if (state.isPro) {
+        banner.className = "bg-emerald-950/70 border-b border-emerald-500/20 py-2 px-4 text-center text-xs text-emerald-300 flex items-center justify-center gap-3 sticky top-0 z-50";
+        bannerText.innerHTML = "✨ Licenza <strong>LIFETIME PRO ATTIVA</strong>. Accesso permanente sbloccato.";
+        badge.textContent = "PRO LIFETIME";
+        badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold uppercase";
+        return;
+      }
+      const daysLeft = Math.max(0, 7 - Math.floor((Date.now() - state.trialStartedAt) / (1000 * 60 * 60 * 24)));
+      bannerText.innerHTML = daysLeft > 0 ? `⚡ Stai usando la <strong>Demo Interattiva (${daysLeft} giorni rimasti)</strong>` : `⚠️ Periodo di prova terminato! Effettua l'upgrade a $2.99.`;
+      badge.textContent = daysLeft > 0 ? `${daysLeft}D TRIAL` : "EXPIRED";
+    }
+
+    function openLicenseModal() { document.getElementById('licenseModal').classList.remove('hidden'); }
+    function closeLicenseModal() { document.getElementById('licenseModal').classList.add('hidden'); }
+    function validateLicenseKey() {
+      const inp = document.getElementById('licenseKeyInput').value.trim();
+      const msg = document.getElementById('licenseMsg');
+      if (inp.length >= 8) {
+        state.isPro = true; saveState();
+        msg.textContent = "Licenza sbloccata con successo!";
+        msg.className = "text-xs text-emerald-400";
+        msg.classList.remove('hidden');
+        checkTrialStatus(); setTimeout(closeLicenseModal, 1500);
+      } else {
+        msg.textContent = "Codice non valido.";
+        msg.className = "text-xs text-rose-400";
+        msg.classList.remove('hidden');
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('it-IT');
+      document.getElementById('liveDate').textContent = now.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    function addXP(a) { state.totalXp += a; saveState(); updateGamification(); }
+    function updateGamification() {
+      let cur = RANKS[0], nxt = RANKS[1];
+      for (let i = 0; i < RANKS.length; i++) { if (state.totalXp >= RANKS[i].xp) { cur = RANKS[i]; nxt = RANKS[i + 1] || null; } else break; }
+      document.getElementById('tierBadge').textContent = cur.name;
+      document.getElementById('xpCurrentDisplay').textContent = `${state.totalXp} XP`;
+      document.getElementById('totalHoursDisplay').textContent = (state.totalSecondsFocus / 3600).toFixed(1) + 'h';
+      document.getElementById('completedSessionsDisplay').textContent = state.completedSessions;
+      document.getElementById('streakDisplay').textContent = `${state.streak} G`;
+      if (nxt) {
+        document.getElementById('xpNextDisplay').textContent = `${nxt.xp} XP`;
+        document.getElementById('xpBar').style.width = `${Math.min(100, Math.max(0, ((state.totalXp - cur.xp) / (nxt.xp - cur.xp)) * 100))}%`;
+      } else {
+        document.getElementById('xpNextDisplay').textContent = "MAX TIER";
+        document.getElementById('xpBar').style.width = '100%';
+      }
+    }
+
+    let timerDuration = 25 * 60, timerTimeLeft = 25 * 60, timerInterval = null, isTimerRunning = false, elapsed = 0;
+    function setTimerPreset(m) {
+      if (isTimerRunning) toggleTimer();
+      timerDuration = m * 60; timerTimeLeft = timerDuration; elapsed = 0;
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        if (parseInt(b.getAttribute('data-min')) === m) { b.classList.add('bg-slate-800', 'text-white'); b.classList.remove('text-slate-400'); }
+        else { b.classList.remove('bg-slate-800', 'text-white'); b.classList.add('text-slate-400'); }
+      });
+      updateTimerDisplay();
+    }
+    function updateTimerDisplay() {
+      const min = Math.floor(timerTimeLeft / 60).toString().padStart(2, '0'), sec = (timerTimeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${min}:${sec}`;
+      document.getElementById('timerProgress').style.strokeDashoffset = 596.9 - (timerTimeLeft / timerDuration) * 596.9;
+    }
+    function toggleTimer() {
+      if (isTimerRunning) {
+        clearInterval(timerInterval); isTimerRunning = false;
+        document.getElementById('toggleTimerText').textContent = "Riprendi";
+        document.getElementById('sessionStatus').textContent = "In Pausa";
+      } else {
+        isTimerRunning = true;
+        document.getElementById('toggleTimerText').textContent = "Pausa";
+        document.getElementById('sessionStatus').textContent = "Focus Attivo";
+        timerInterval = setInterval(() => {
+          if (timerTimeLeft > 0) {
+            timerTimeLeft--; elapsed++; state.totalSecondsFocus++;
+            if (elapsed % 60 === 0) addXP(1);
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval); isTimerRunning = false;
+            state.completedSessions++; addXP(25); saveState();
+            alert("Sessione completata (+25 XP)!"); resetTimer();
+          }
+        }, 1000);
+      }
+      lucide.createIcons();
+    }
+    function resetTimer() {
+      if (isTimerRunning) toggleTimer();
+      timerTimeLeft = timerDuration; elapsed = 0;
+      document.getElementById('toggleTimerText').textContent = "Inizia Sessione";
+      document.getElementById('sessionStatus').textContent = "Pronto al Flow";
+      updateTimerDisplay(); lucide.createIcons();
+    }
+
+    let audioCtx, oscL, oscR, masterGain, brownGain, isAudioOn = false, analyser, anim;
+    function initAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = parseFloat(document.getElementById('volumeSlider').value);
+      analyser = audioCtx.createAnalyser(); analyser.fftSize = 64;
+      masterGain.connect(analyser); analyser.connect(audioCtx.destination);
+      const merger = audioCtx.createChannelMerger(2);
+      oscL = audioCtx.createOscillator(); oscL.frequency.value = 200;
+      oscR = audioCtx.createOscillator(); oscR.frequency.value = 240;
+      oscL.connect(merger, 0, 0); oscR.connect(merger, 0, 1);
+      merger.connect(masterGain); oscL.start(); oscR.start();
+
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const o = buf.getChannelData(0); let last = 0;
+      for (let i = 0; i < o.length; i++) { const w = Math.random() * 2 - 1; o[i] = (last + (0.02 * w)) / 1.02; last = o[i]; o[i] *= 3.5; }
+      const b = audioCtx.createBufferSource(); b.buffer = buf; b.loop = true;
+      brownGain = audioCtx.createGain(); brownGain.gain.value = 0;
+      b.connect(brownGain); brownGain.connect(masterGain); b.start();
+    }
+    function toggleAudio() {
+      if (!audioCtx) initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (isAudioOn) {
+        masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05); isAudioOn = false;
+        document.getElementById('toggleAudioBtn').textContent = "Avvia Onde 40 Hz";
+        document.getElementById('audioStatusPlaceholder').classList.remove('hidden');
+        cancelAnimationFrame(anim);
+      } else {
+        masterGain.gain.setTargetAtTime(parseFloat(document.getElementById('volumeSlider').value), audioCtx.currentTime, 0.05); isAudioOn = true;
+        document.getElementById('toggleAudioBtn').textContent = "Spegni Onde 40 Hz";
+        document.getElementById('audioStatusPlaceholder').classList.add('hidden');
+        drawCanvas();
+      }
+    }
+    function setAudioVolume(v) { document.getElementById('volumeVal').textContent = `${Math.round(v * 100)}%`; if (masterGain && isAudioOn) masterGain.gain.setTargetAtTime(parseFloat(v), audioCtx.currentTime, 0.05); }
+    function toggleBrownNoise(on) { if (!audioCtx) initAudio(); if (brownGain) brownGain.gain.setTargetAtTime(on ? 0.25 : 0, audioCtx.currentTime, 0.1); }
+    function drawCanvas() {
+      const cvs = document.getElementById('visualizerCanvas'), ctx = cvs.getContext('2d'), arr = new Uint8Array(analyser.frequencyBinCount);
+      function loop() {
+        if (!isAudioOn) return; anim = requestAnimationFrame(loop); analyser.getByteFrequencyData(arr);
+        ctx.fillStyle = '#020617'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+        const w = (cvs.width / arr.length) * 2; let x = 0;
+        for (let i = 0; i < arr.length; i++) { const h = (arr[i] / 255) * cvs.height; ctx.fillStyle = `rgba(139, 92, 246, ${arr[i]/255 + 0.2})`; ctx.fillRect(x, cvs.height - h, w - 2, h); x += w; }
+      }
+      loop();
+    }
+
+    function renderGoals() {
+      const el = document.getElementById('goalsList'); el.innerHTML = ''; let done = 0;
+      state.goals.forEach(g => {
+        if (g.done) done++;
+        const li = document.createElement('li');
+        li.className = `flex items-center justify-between p-2 rounded-xl border text-xs ${g.done ? 'bg-emerald-950/20 border-emerald-800/40 opacity-70' : 'bg-slate-950 border-slate-800'}`;
+        li.innerHTML = `<div class="flex items-center gap-2 truncate"><button onclick="toggleGoal(${g.id})" class="w-4 h-4 rounded border flex items-center justify-center ${g.done ? 'bg-emerald-500 border-emerald-400 text-black' : 'border-slate-700'}">${g.done ? '✓' : ''}</button><span class="${g.done ? 'line-through text-slate-400' : 'text-slate-200'}">${g.text}</span></div><button onclick="deleteGoal(${g.id})" class="text-slate-600 hover:text-rose-400 p-1">✕</button>`;
+        el.appendChild(li);
+      });
+      document.getElementById('tasksCounter').textContent = `${done}/${state.goals.length}`;
+    }
+    function addGoal() { const inp = document.getElementById('goalInput'); if (!inp.value.trim()) return; state.goals.push({ id: Date.now(), text: inp.value.trim(), done: false }); inp.value = ''; saveState(); renderGoals(); }
+    function toggleGoal(id) { const g = state.goals.find(x => x.id === id); if (g) { g.done = !g.done; if (g.done) addXP(10); saveState(); renderGoals(); } }
+    function deleteGoal(id) { state.goals = state.goals.filter(x => x.id !== id); saveState(); renderGoals(); }
+
+    window.addEventListener('DOMContentLoaded', () => { loadState(); lucide.createIcons(); });
+  </script>
+</body>
+</html>
