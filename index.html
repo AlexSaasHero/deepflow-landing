@@ -1,1 +1,461 @@
-<h1>DeepFlow Landing</h1>
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeepFlow 40Hz - Focus Hub & Gamified Study Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 900: '#1e1b4b', 950: '#0b0c14' }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.08); }
+    }
+    .glow-bg { animation: pulse-glow 9s ease-in-out infinite; }
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-[#0b0c14] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-violet-600 selection:text-white relative overflow-x-hidden">
+
+  <div class="fixed top-[-10vw] left-[15vw] w-[45vw] h-[45vw] bg-violet-600/15 rounded-full blur-[140px] pointer-events-none glow-bg"></div>
+  <div class="fixed bottom-[-10vw] right-[10vw] w-[40vw] h-[40vw] bg-indigo-600/15 rounded-full blur-[130px] pointer-events-none glow-bg"></div>
+
+  <div id="licenseBanner" class="bg-gradient-to-r from-violet-900/60 via-indigo-900/60 to-violet-900/60 border-b border-violet-500/20 py-2 px-4 text-center text-xs text-violet-200 flex items-center justify-center gap-3 backdrop-blur-md sticky top-0 z-50">
+    <span id="licenseBannerText">⚡ Stai usando la <strong>Demo Interattiva (7 Giorni Gratuiti)</strong></span>
+    <button onclick="openLicenseModal()" class="underline text-white font-semibold hover:text-violet-300 transition">Hai una Key?</button>
+  </div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md px-6 py-4 sticky top-[37px] z-40 transition-all">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-600/30">
+          <i data-lucide="brain" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-lg tracking-wide text-white">DeepFlow</span>
+            <span id="tierProBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold uppercase tracking-wider">
+              7D FREE TRIAL
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">40Hz Binaural Beats & Gamified Focus Hub</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="text-right hidden sm:block mr-2">
+          <div id="liveClock" class="text-base font-mono font-semibold tracking-wider text-slate-200">00:00:00</div>
+          <div id="liveDate" class="text-[10px] text-slate-400 font-medium">--</div>
+        </div>
+
+        <button onclick="openLicenseModal()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold transition active:scale-95 flex items-center gap-1.5">
+          <i data-lucide="key" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Attiva Key</span>
+        </button>
+
+        <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
+           class="lemonsqueezy-button px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:brightness-110 text-white text-xs font-bold shadow-lg shadow-violet-600/25 transition active:scale-95 flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Sblocca a $2.99</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="max-w-5xl mx-auto px-6 pt-12 pb-8 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium mb-5">
+      <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+      <span>Piattaforma di Studio All-In-One & Gamification</span>
+    </div>
+    
+    <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+      Raddoppia il Focus con <span class="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">Onde 40Hz</span> & Livelli di Studio
+    </h1>
+    
+    <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto mb-8">
+      Smetti di disperdere l'attenzione su 5 tab diverse. Un'unica schermata con player 40Hz Gamma in tempo reale, Pomodoro timer, obiettivi e un sistema di rango da Bronzo a Diamante.
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <a href="#demo-platform" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition flex items-center gap-2">
+        <i data-lucide="play-circle" class="w-4 h-4 text-violet-400"></i>
+        <span>Prova la Demo Gratuita (7 Giorni)</span>
+      </a>
+      <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
+         class="lemonsqueezy-button px-7 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-xl shadow-violet-600/30 hover:brightness-110 transition flex items-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4"></i>
+        <span>Ottieni la Key a Vita a Solo $2.99</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="demo-platform" class="max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 z-10">
+    <div class="lg:col-span-7 flex flex-col gap-5">
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div class="flex items-center gap-2">
+            <i data-lucide="timer" class="w-5 h-5 text-violet-400"></i>
+            <h2 class="font-bold text-slate-200 text-base">Focus Timer</h2>
+          </div>
+          <div class="flex gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
+            <button onclick="setTimerPreset(25)" class="preset-btn px-3 py-1 rounded-lg text-slate-300 transition bg-slate-800 font-medium" data-min="25">25m (Pomo)</button>
+            <button onclick="setTimerPreset(50)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 hover:text-white transition font-medium" data-min="50">50m (Deep)</button>
+            <button onclick="setTimerPreset(90)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 hover:text-white transition font-medium" data-min="90">90m (Ultra)</button>
+            <button onclick="setTimerPreset(5)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 hover:text-white transition font-medium" data-min="5">5m (Break)</button>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-center my-4 relative">
+          <div class="relative w-60 h-60 flex items-center justify-center">
+            <svg class="w-full h-full transform -rotate-90">
+              <circle cx="120" cy="120" r="105" stroke="currentColor" stroke-width="8" class="text-slate-800/60" fill="transparent" />
+              <circle id="timerProgress" cx="120" cy="120" r="105" stroke="currentColor" stroke-width="8" 
+                      class="text-violet-500 transition-all duration-500 ease-out" 
+                      stroke-linecap="round" fill="transparent" stroke-dasharray="659.73" stroke-dashoffset="0" />
+            </svg>
+            <div class="absolute flex flex-col items-center text-center">
+              <span id="timerDisplay" class="font-mono text-5xl font-extrabold tracking-tight text-white drop-shadow">25:00</span>
+              <span id="sessionStatus" class="text-[11px] uppercase tracking-widest text-violet-400/80 font-bold mt-2">Pronto al Flow</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-4 mt-2">
+          <button id="toggleTimerBtn" onclick="toggleTimer()" 
+                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold shadow-lg shadow-violet-600/30 hover:brightness-110 active:scale-95 transition">
+            <i id="toggleTimerIcon" data-lucide="play" class="w-4 h-4"></i>
+            <span id="toggleTimerText">Inizia Sessione</span>
+          </button>
+          <button onclick="resetTimer()" 
+                  class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition active:scale-95 border border-slate-700/60" title="Resetta">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2.5">
+            <i data-lucide="award" class="w-5 h-5 text-amber-400"></i>
+            <h2 class="font-bold text-slate-200 text-base">Livello & Ranghi</h2>
+          </div>
+          <div class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400" id="tierBadge">Bronzo I</div>
+        </div>
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between text-xs font-medium text-slate-300">
+            <span>XP Attuali: <b id="xpCurrentDisplay" class="text-violet-400 font-mono">0 XP</b></span>
+            <span>Target Livello: <b id="xpNextDisplay" class="text-slate-400 font-mono">600 XP</b></span>
+          </div>
+          <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800 p-0.5">
+            <div id="xpBar" class="bg-gradient-to-r from-violet-500 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center pt-2 border-t border-slate-800/60">
+          <div class="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/50">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Ore Totali</div>
+            <div id="totalHoursDisplay" class="text-base font-mono font-bold text-slate-100">0.0h</div>
+          </div>
+          <div class="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/50">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Sessioni</div>
+            <div id="completedSessionsDisplay" class="text-base font-mono font-bold text-slate-100">0</div>
+          </div>
+          <div class="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/50">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Streak</div>
+            <div id="streakDisplay" class="text-base font-bold text-amber-400">1 Giorno</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-5 flex flex-col gap-5">
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div class="w-2.5 h-2.5 rounded-full bg-violet-400 animate-ping"></div>
+            <h2 class="font-bold text-slate-200 text-base">40 Hz Gamma Player</h2>
+          </div>
+          <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-violet-300 font-mono">Web Audio API</span>
+        </div>
+        <div class="h-20 w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 mb-4 flex items-center justify-center relative">
+          <canvas id="visualizerCanvas" class="w-full h-full"></canvas>
+          <div id="audioStatusPlaceholder" class="absolute text-xs text-slate-500 font-medium">Audio in Pausa</div>
+        </div>
+        <div class="space-y-4">
+          <button id="toggleAudioBtn" onclick="toggleAudio()" 
+                  class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-800 hover:bg-violet-600 text-white font-semibold text-xs transition border border-slate-700/80 active:scale-95">
+            <i id="toggleAudioIcon" data-lucide="volume-2" class="w-4 h-4"></i>
+            <span id="toggleAudioText">Avvia Onde 40 Hz</span>
+          </button>
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs text-slate-400">
+              <span>Volume</span>
+              <span id="volumeVal" class="font-mono">40%</span>
+            </div>
+            <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.4" 
+                   oninput="setAudioVolume(this.value)" 
+                   class="w-full accent-violet-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer appearance-none">
+          </div>
+          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
+            <div class="flex flex-col">
+              <span class="text-xs font-semibold text-slate-200">Rumore Marrone</span>
+              <span class="text-[10px] text-slate-400">Deep Masking</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="brownNoiseToggle" onchange="toggleBrownNoise(this.checked)" class="sr-only peer">
+              <div class="w-8 h-4 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-violet-600"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex-1 flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-square" class="w-5 h-5 text-emerald-400"></i>
+            <h2 class="font-bold text-slate-200 text-base">Session Goals</h2>
+          </div>
+          <span class="text-xs text-slate-400 font-mono" id="tasksCounter">0/0</span>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <input type="text" id="goalInput" placeholder="Obiettivo..." 
+                 onkeydown="if(event.key==='Enter') addGoal()"
+                 class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-violet-500 transition">
+          <button onclick="addGoal()" class="bg-violet-600 hover:bg-violet-500 text-white px-3 py-1.5 rounded-xl transition active:scale-95 text-xs">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <ul id="goalsList" class="space-y-2 flex-1 overflow-y-auto max-h-[180px] custom-scroll pr-1"></ul>
+      </div>
+    </div>
+  </section>
+
+  <div id="licenseModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeLicenseModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="w-12 h-12 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center text-violet-400 mb-4">
+        <i data-lucide="key" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-1">Attiva Licenza DeepFlow</h3>
+      <p class="text-xs text-slate-400 mb-4">Inserisci la License Key ricevuta via email per sbloccare la piattaforma a vita.</p>
+      <div class="space-y-3">
+        <input type="text" id="licenseKeyInput" placeholder="XXXX-XXXX-XXXX-XXXX" 
+               class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 uppercase font-mono tracking-wider focus:outline-none focus:border-violet-500">
+        <div id="licenseError" class="text-xs text-rose-400 hidden"></div>
+        <div id="licenseSuccess" class="text-xs text-emerald-400 hidden"></div>
+        <div class="flex gap-2 pt-2">
+          <button onclick="validateLicenseKey()" class="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs transition">Verifica & Sblocca</button>
+          <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" class="lemonsqueezy-button px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition text-center flex items-center justify-center">Compra Key ($2.99)</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-slate-800/60 py-6 px-6 text-center text-xs text-slate-500 mt-12">
+    <p>DeepFlow Studio Hub &copy; 2026. Made for deep focus.</p>
+  </footer>
+
+  <script>
+    const RANKS = [
+      { name: "Bronzo I", xp: 0 }, { name: "Bronzo II", xp: 600 }, { name: "Bronzo III", xp: 1200 },
+      { name: "Argento I", xp: 2100 }, { name: "Argento II", xp: 3300 }, { name: "Argento III", xp: 4800 },
+      { name: "Oro I", xp: 6600 }, { name: "Oro II", xp: 9000 }, { name: "Oro III", xp: 12000 },
+      { name: "Platino I", xp: 15600 }, { name: "Platino II", xp: 21000 }, { name: "Platino III", xp: 30000 },
+      { name: "Diamante Focus", xp: 45000 }
+    ];
+    let state = { isPro: false, trialStartedAt: null, licenseKey: null, totalXp: 0, totalSecondsFocus: 0, completedSessions: 0, streak: 1, lastActiveDate: new Date().toISOString().slice(0, 10), goals: [{ id: 1, text: "Completare capitolo teorico", done: false }] };
+
+    function loadState() {
+      const s = localStorage.getItem('deepflow_state');
+      if (s) { try { state = { ...state, ...JSON.parse(s) }; } catch(e){} }
+      if (!state.trialStartedAt) { state.trialStartedAt = Date.now(); saveState(); }
+      checkTrialStatus(); updateGamification(); renderGoals(); updateTimerDisplay();
+    }
+    function saveState() { localStorage.setItem('deepflow_state', JSON.stringify(state)); }
+
+    function checkTrialStatus() {
+      const banner = document.getElementById('licenseBanner'), bannerText = document.getElementById('licenseBannerText'), badge = document.getElementById('tierProBadge');
+      if (state.isPro) {
+        banner.className = "bg-emerald-950/70 border-b border-emerald-500/20 py-2 px-4 text-center text-xs text-emerald-300 flex items-center justify-center gap-3 backdrop-blur-md sticky top-0 z-50";
+        bannerText.innerHTML = "✨ Licenza <strong>LIFETIME PRO ATTIVA</strong>. Accesso completo permanente.";
+        badge.textContent = "LIFETIME PRO";
+        badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold uppercase tracking-wider";
+        return;
+      }
+      const daysLeft = Math.max(0, 7 - Math.floor((Date.now() - state.trialStartedAt) / (1000 * 60 * 60 * 24)));
+      bannerText.innerHTML = daysLeft > 0 ? `⚡ Versione Demo: ti restano <strong>${daysLeft} giorni</strong> di prova.` : `⚠️ Periodo di prova terminato! Effettua l'upgrade a $2.99.`;
+      badge.textContent = daysLeft > 0 ? `${daysLeft}D TRIAL` : "EXPIRED";
+    }
+
+    function openLicenseModal() { document.getElementById('licenseModal').classList.remove('hidden'); }
+    function closeLicenseModal() { document.getElementById('licenseModal').classList.add('hidden'); }
+    function validateLicenseKey() {
+      const inp = document.getElementById('licenseKeyInput').value.trim();
+      if (inp.length >= 8) {
+        state.isPro = true; state.licenseKey = inp; saveState();
+        document.getElementById('licenseSuccess').textContent = "Licenza attivata!";
+        document.getElementById('licenseSuccess').classList.remove('hidden');
+        checkTrialStatus(); setTimeout(closeLicenseModal, 1500);
+      } else {
+        document.getElementById('licenseError').textContent = "Codice non valido.";
+        document.getElementById('licenseError').classList.remove('hidden');
+      }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('it-IT');
+      document.getElementById('liveDate').textContent = now.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    function addXP(a) { state.totalXp += a; saveState(); updateGamification(); }
+    function updateGamification() {
+      let cur = RANKS[0], nxt = RANKS[1];
+      for (let i = 0; i < RANKS.length; i++) { if (state.totalXp >= RANKS[i].xp) { cur = RANKS[i]; nxt = RANKS[i + 1] || null; } else break; }
+      document.getElementById('tierBadge').textContent = cur.name;
+      document.getElementById('xpCurrentDisplay').textContent = `${state.totalXp} XP`;
+      document.getElementById('totalHoursDisplay').textContent = (state.totalSecondsFocus / 3600).toFixed(1) + 'h';
+      document.getElementById('completedSessionsDisplay').textContent = state.completedSessions;
+      document.getElementById('streakDisplay').textContent = `${state.streak} G`;
+      if (nxt) {
+        document.getElementById('xpNextDisplay').textContent = `${nxt.xp} XP`;
+        document.getElementById('xpBar').style.width = `${Math.min(100, Math.max(0, ((state.totalXp - cur.xp) / (nxt.xp - cur.xp)) * 100))}%`;
+      } else {
+        document.getElementById('xpNextDisplay').textContent = "MAX TIER";
+        document.getElementById('xpBar').style.width = '100%';
+      }
+    }
+
+    let timerDuration = 25 * 60, timerTimeLeft = 25 * 60, timerInterval = null, isTimerRunning = false, elapsed = 0;
+    function setTimerPreset(m) {
+      if (isTimerRunning) toggleTimer();
+      timerDuration = m * 60; timerTimeLeft = timerDuration; elapsed = 0;
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        if (parseInt(b.getAttribute('data-min')) === m) { b.classList.add('bg-slate-800', 'text-white'); b.classList.remove('text-slate-400'); }
+        else { b.classList.remove('bg-slate-800', 'text-white'); b.classList.add('text-slate-400'); }
+      });
+      updateTimerDisplay();
+    }
+    function updateTimerDisplay() {
+      const min = Math.floor(timerTimeLeft / 60).toString().padStart(2, '0'), sec = (timerTimeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${min}:${sec}`;
+      document.getElementById('timerProgress').style.strokeDashoffset = (2 * Math.PI * 105) - (timerTimeLeft / timerDuration) * (2 * Math.PI * 105);
+    }
+    function toggleTimer() {
+      if (isTimerRunning) {
+        clearInterval(timerInterval); isTimerRunning = false;
+        document.getElementById('toggleTimerText').textContent = "Riprendi";
+        document.getElementById('toggleTimerIcon').setAttribute('data-lucide', 'play');
+        document.getElementById('sessionStatus').textContent = "In Pausa";
+      } else {
+        isTimerRunning = true;
+        document.getElementById('toggleTimerText').textContent = "Pausa";
+        document.getElementById('toggleTimerIcon').setAttribute('data-lucide', 'pause');
+        document.getElementById('sessionStatus').textContent = "Focus Attivo";
+        timerInterval = setInterval(() => {
+          if (timerTimeLeft > 0) {
+            timerTimeLeft--; elapsed++; state.totalSecondsFocus++;
+            if (elapsed % 60 === 0) addXP(1);
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval); isTimerRunning = false;
+            state.completedSessions++; addXP(25); saveState();
+            alert("Sessione completata (+25 XP)!"); resetTimer();
+          }
+        }, 1000);
+      }
+      lucide.createIcons();
+    }
+    function resetTimer() {
+      if (isTimerRunning) toggleTimer();
+      timerTimeLeft = timerDuration; elapsed = 0;
+      document.getElementById('toggleTimerText').textContent = "Inizia Sessione";
+      document.getElementById('toggleTimerIcon').setAttribute('data-lucide', 'play');
+      document.getElementById('sessionStatus').textContent = "Pronto al Flow";
+      updateTimerDisplay(); lucide.createIcons();
+    }
+
+    let audioCtx, oscL, oscR, masterGain, brownGain, isAudioOn = false, analyser, anim;
+    function initAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = parseFloat(document.getElementById('volumeSlider').value);
+      analyser = audioCtx.createAnalyser(); analyser.fftSize = 64;
+      masterGain.connect(analyser); analyser.connect(audioCtx.destination);
+      const merger = audioCtx.createChannelMerger(2);
+      oscL = audioCtx.createOscillator(); oscL.frequency.value = 200;
+      oscR = audioCtx.createOscillator(); oscR.frequency.value = 240;
+      oscL.connect(merger, 0, 0); oscR.connect(merger, 0, 1);
+      merger.connect(masterGain); oscL.start(); oscR.start();
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const o = buf.getChannelData(0); let last = 0;
+      for (let i = 0; i < o.length; i++) { const w = Math.random() * 2 - 1; o[i] = (last + (0.02 * w)) / 1.02; last = o[i]; o[i] *= 3.5; }
+      const b = audioCtx.createBufferSource(); b.buffer = buf; b.loop = true;
+      brownGain = audioCtx.createGain(); brownGain.gain.value = 0;
+      b.connect(brownGain); brownGain.connect(masterGain); b.start();
+    }
+    function toggleAudio() {
+      if (!audioCtx) initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (isAudioOn) {
+        masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05); isAudioOn = false;
+        document.getElementById('toggleAudioText').textContent = "Avvia Onde 40 Hz";
+        document.getElementById('audioStatusPlaceholder').classList.remove('hidden');
+        cancelAnimationFrame(anim);
+      } else {
+        masterGain.gain.setTargetAtTime(parseFloat(document.getElementById('volumeSlider').value), audioCtx.currentTime, 0.05); isAudioOn = true;
+        document.getElementById('toggleAudioText').textContent = "Spegni 40 Hz";
+        document.getElementById('audioStatusPlaceholder').classList.add('hidden');
+        drawCanvas();
+      }
+      lucide.createIcons();
+    }
+    function setAudioVolume(v) { document.getElementById('volumeVal').textContent = `${Math.round(v * 100)}%`; if (masterGain && isAudioOn) masterGain.gain.setTargetAtTime(parseFloat(v), audioCtx.currentTime, 0.05); }
+    function toggleBrownNoise(on) { if (!audioCtx) initAudio(); if (brownGain) brownGain.gain.setTargetAtTime(on ? 0.25 : 0, audioCtx.currentTime, 0.1); }
+    function drawCanvas() {
+      const cvs = document.getElementById('visualizerCanvas'), ctx = cvs.getContext('2d'), arr = new Uint8Array(analyser.frequencyBinCount);
+      function loop() {
+        if (!isAudioOn) return; anim = requestAnimationFrame(loop); analyser.getByteFrequencyData(arr);
+        ctx.fillStyle = '#020617'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+        const w = (cvs.width / arr.length) * 2; let x = 0;
+        for (let i = 0; i < arr.length; i++) { const h = (arr[i] / 255) * cvs.height; ctx.fillStyle = `rgba(139, 92, 246, ${arr[i]/255 + 0.2})`; ctx.fillRect(x, cvs.height - h, w - 2, h); x += w; }
+      }
+      loop();
+    }
+
+    function renderGoals() {
+      const el = document.getElementById('goalsList'); el.innerHTML = ''; let done = 0;
+      state.goals.forEach(g => {
+        if (g.done) done++;
+        const li = document.createElement('li');
+        li.className = `flex items-center justify-between p-2 rounded-xl border text-xs ${g.done ? 'bg-emerald-950/20 border-emerald-800/40 opacity-70' : 'bg-slate-950 border-slate-800'}`;
+        li.innerHTML = `<div class="flex items-center gap-2 truncate"><button onclick="toggleGoal(${g.id})" class="w-4 h-4 rounded border flex items-center justify-center ${g.done ? 'bg-emerald-500 border-emerald-400 text-black' : 'border-slate-700'}">${g.done ? '✓' : ''}</button><span class="${g.done ? 'line-through text-slate-400' : 'text-slate-200'}">${g.text}</span></div><button onclick="deleteGoal(${g.id})" class="text-slate-600 hover:text-rose-400 p-1">✕</button>`;
+        el.appendChild(li);
+      });
+      document.getElementById('tasksCounter').textContent = `${done}/${state.goals.length}`;
+    }
+    function addGoal() { const inp = document.getElementById('goalInput'); if (!inp.value.trim()) return; state.goals.push({ id: Date.now(), text: inp.value.trim(), done: false }); inp.value = ''; saveState(); renderGoals(); }
+    function toggleGoal(id) { const g = state.goals.find(x => x.id === id); if (g) { g.done = !g.done; if (g.done) addXP(10); saveState(); renderGoals(); } }
+    function deleteGoal(id) { state.goals = state.goals.filter(x => x.id !== id); saveState(); renderGoals(); }
+
+    window.addEventListener('DOMContentLoaded', () => { loadState(); lucide.createIcons(); });
+  </script>
+</body>
+</html>
