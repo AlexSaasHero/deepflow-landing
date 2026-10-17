@@ -19,15 +19,58 @@
   </script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.08); }
+    }
+    .glow-bg { animation: pulse-glow 9s ease-in-out infinite; }
+  </style>
 </head>
-<body class="bg-[#0b0c14] text-slate-100 min-h-screen font-sans selection:bg-violet-600 selection:text-white">
+<body class="bg-[#0b0c14] text-slate-100 min-h-screen font-sans selection:bg-violet-600 selection:text-white relative">
+
+  <!-- TOP STICKY URGENCY BAR (COUNTDOWN 50% OFF) -->
+  <div id="promoBar" class="bg-gradient-to-r from-violet-950 via-indigo-900 to-violet-950 border-b border-violet-500/30 py-2.5 px-4 sticky top-0 z-50 backdrop-blur-md shadow-lg shadow-violet-950/40">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+      
+      <!-- Testo Promo -->
+      <div class="flex items-center gap-2">
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+        </span>
+        <span class="text-slate-200">
+          🔥 <strong class="text-white">OFFERTA LANCIO LIMITATA:</strong> Sconto del <span class="text-amber-400 font-bold">50%</span> — Solo <span class="text-emerald-400 font-bold text-sm">$2.99</span> <span class="line-through text-slate-500 font-medium">$5.99</span>
+        </span>
+      </div>
+
+      <!-- Timer & CTA -->
+      <div class="flex items-center gap-4">
+        <!-- Orologio Countdown -->
+        <div class="flex items-center gap-1.5 font-mono text-xs bg-slate-950/80 px-2.5 py-1 rounded-lg border border-violet-500/30 text-amber-300">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Scade tra:</span>
+          <span id="countdownHours" class="font-bold text-white">00</span>h :
+          <span id="countdownMinutes" class="font-bold text-white">00</span>m :
+          <span id="countdownSeconds" class="font-bold text-rose-400">00</span>s
+        </div>
+
+        <!-- Tasto Rapido Lemon Squeezy -->
+        <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
+           class="lemonsqueezy-button hidden sm:inline-flex px-3 py-1 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs transition active:scale-95">
+          Approfitta ora
+        </a>
+      </div>
+
+    </div>
+  </div>
 
   <!-- Glow Backgrounds -->
-  <div class="fixed top-[-10vw] left-[15vw] w-[45vw] h-[45vw] bg-violet-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-  <div class="fixed bottom-[-10vw] right-[10vw] w-[40vw] h-[40vw] bg-indigo-600/10 rounded-full blur-[130px] pointer-events-none"></div>
+  <div class="fixed top-[-10vw] left-[15vw] w-[45vw] h-[45vw] bg-violet-600/10 rounded-full blur-[140px] pointer-events-none glow-bg"></div>
+  <div class="fixed bottom-[-10vw] right-[10vw] w-[40vw] h-[40vw] bg-indigo-600/10 rounded-full blur-[130px] pointer-events-none glow-bg"></div>
 
   <!-- HEADER -->
-  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md px-6 py-4 sticky top-[45px] z-40">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-600/30">
@@ -37,11 +80,11 @@
       </div>
       <div class="flex items-center gap-3">
         <a href="app.html" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-xs font-semibold transition">
-          Prova Demo
+          Prova Demo (7D)
         </a>
         <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
            class="lemonsqueezy-button px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:brightness-110 text-white text-xs font-bold shadow-lg shadow-violet-600/25 transition">
-          Ottieni a $2.99
+          Sblocca a $2.99
         </a>
       </div>
     </div>
@@ -53,7 +96,7 @@
       L'ambiente di studio progettato per la <span class="bg-gradient-to-r from-violet-400 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">massima concentrazione</span>
     </h1>
     <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-      Niente distrazioni e zero cambi di tab. Un unico hub che unisce audiofrequenze gamma, cicli ultradiani e progressione a livelli per trasformare ogni sessione di studio in flow continuo.
+      Niente distrazioni e zero cambi di tab. Un unico hub che unisce audiofrequenze gamma a 40Hz, cicli ultradiani e progressione a livelli per trasformare ogni sessione di studio in flow continuo.
     </p>
     <div class="flex flex-wrap items-center justify-center gap-4">
       <a href="app.html" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-xl shadow-violet-600/30 hover:brightness-110 transition flex items-center gap-2">
@@ -178,7 +221,7 @@
             Non ci sono scorciatoie: le pause non accumulano punti. Ogni minuto dedicato ai tuoi libri aumenta visibilmente la barra di progressione.
           </div>
           <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <strong class="text-amber-400 text-sm block mb-1">Da Bronzo I a Diamante Focus</strong>
+            <strong class="text-amber-400 text-sm block mb-1 Da Bronzo I a Diamante Focus</strong>
             Scali ranghi progressivi (Bronzo 1-3, Argento 1-3, Oro, Platino e Diamante) creando un senso palpabile di maestria e consistenza giorno dopo giorno.
           </div>
           <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
@@ -256,7 +299,7 @@
         Pronto a trasformare il tuo modo di studiare?
       </h2>
       <p class="text-slate-400 text-sm max-w-xl mx-auto">
-        Puoi testare subito la demo gratuita per 7 giorni senza inserire nessuna carta di credito, oppure acquistare subito l'accesso a vita a soli $2.99.
+        Puoi testare subito la demo gratuita per 7 giorni senza inserire nessuna carta di credito, oppure acquistare subito l'accesso a vita scontato al 50% a soli $2.99.
       </p>
 
       <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -268,7 +311,7 @@
         <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
            class="lemonsqueezy-button px-8 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-xl shadow-violet-600/30 hover:brightness-110 transition flex items-center gap-2">
           <i data-lucide="key" class="w-4 h-4"></i>
-          <span>Acquista Licenza Lifetime a $2.99</span>
+          <span>Acquista Licenza Lifetime a $2.99 (-50%)</span>
         </a>
       </div>
 
@@ -284,8 +327,49 @@
     <p>DeepFlow Focus Platform &copy; 2026. Progettato per studenti e deep workers.</p>
   </footer>
 
+  <!-- SCRIPT DINAMICO COUNTDOWN (EVERGREEN 6H RESET) -->
   <script>
     lucide.createIcons();
+
+    function initUrgencyCountdown() {
+      const STORAGE_KEY = 'deepflow_discount_expiry';
+      const DURATION_MS = 6 * 60 * 60 * 1000; // 6 ore di timer perenne
+
+      let expiry = localStorage.getItem(STORAGE_KEY);
+      const now = Date.now();
+
+      if (!expiry || now >= parseInt(expiry, 10)) {
+        expiry = now + DURATION_MS;
+        localStorage.setItem(STORAGE_KEY, expiry);
+      } else {
+        expiry = parseInt(expiry, 10);
+      }
+
+      function updateDisplay() {
+        const current = Date.now();
+        let remaining = expiry - current;
+
+        if (remaining <= 0) {
+          // Reset automatico a 6 ore se scade
+          expiry = Date.now() + DURATION_MS;
+          localStorage.setItem(STORAGE_KEY, expiry);
+          remaining = DURATION_MS;
+        }
+
+        const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+        const seconds = Math.floor((remaining / 1000) % 60);
+
+        document.getElementById('countdownHours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('countdownMinutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('countdownSeconds').textContent = seconds.toString().padStart(2, '0');
+      }
+
+      updateDisplay();
+      setInterval(updateDisplay, 1000);
+    }
+
+    window.addEventListener('DOMContentLoaded', initUrgencyCountdown);
   </script>
 </body>
 </html>
