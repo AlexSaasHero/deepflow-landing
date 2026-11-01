@@ -29,7 +29,7 @@
   <!-- BANNER PROVA / LICENZA -->
   <div id="licenseBanner" class="bg-gradient-to-r from-violet-900/60 via-indigo-900/60 to-violet-900/60 border-b border-violet-500/20 py-2 px-4 text-center text-xs text-violet-200 flex items-center justify-center gap-3 backdrop-blur-md sticky top-0 z-50">
     <span id="licenseBannerText">⚡ Stai usando la <strong>Demo Interattiva (7 Giorni Gratuiti)</strong></span>
-    <button onclick="openLicenseModal()" class="underline text-white font-semibold hover:text-violet-300 transition">Hai una Key?</button>
+    <button id="hasKeyBtn" onclick="openLicenseModal()" class="underline text-white font-semibold hover:text-violet-300 transition">Hai una Key?</button>
   </div>
 
   <!-- HEADER -->
@@ -48,14 +48,27 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <!-- Orologio Live -->
         <div class="text-right hidden sm:block mr-2">
           <div id="liveClock" class="text-base font-mono font-semibold text-slate-200">00:00:00</div>
           <div id="liveDate" class="text-[10px] text-slate-400">--</div>
         </div>
-        <button onclick="openLicenseModal()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold transition">
+
+        <!-- Fullscreen Button -->
+        <button id="fullscreenBtn" onclick="toggleFullscreen()" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold transition flex items-center justify-center" title="Schermo Intero">
+          <i id="fullscreenIcon" data-lucide="maximize" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Badge PRO Fisso (visibile solo se Pro Attivo) -->
+        <div id="proActiveBadge" class="hidden px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-1.5 shadow-sm">
+          <span>PRO ATTIVO ✓</span>
+        </div>
+
+        <!-- Azioni per utenti non Pro -->
+        <button id="activateKeyBtn" onclick="openLicenseModal()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold transition">
           Attiva Key
         </button>
-        <a href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
+        <a id="buyCheckoutBtn" href="https://speedup-videopro.lemonsqueezy.com/checkout/buy/2a1afeb3-f19f-4fa2-9f69-3ed1090a75f8?embed=1" 
            class="lemonsqueezy-button px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold shadow-lg transition">
           Sblocca a $2.99
         </a>
@@ -226,17 +239,40 @@
     function saveState() { localStorage.setItem('deepflow_state', JSON.stringify(state)); }
 
     function checkTrialStatus() {
-      const banner = document.getElementById('licenseBanner'), bannerText = document.getElementById('licenseBannerText'), badge = document.getElementById('tierProBadge');
+      const banner = document.getElementById('licenseBanner');
+      const bannerText = document.getElementById('licenseBannerText');
+      const hasKeyBtn = document.getElementById('hasKeyBtn');
+      const badge = document.getElementById('tierProBadge');
+      const activateKeyBtn = document.getElementById('activateKeyBtn');
+      const buyCheckoutBtn = document.getElementById('buyCheckoutBtn');
+      const proActiveBadge = document.getElementById('proActiveBadge');
+
       if (state.isPro) {
-        banner.className = "bg-emerald-950/70 border-b border-emerald-500/20 py-2 px-4 text-center text-xs text-emerald-300 flex items-center justify-center gap-3 sticky top-0 z-50";
-        bannerText.innerHTML = "✨ Licenza <strong>LIFETIME PRO ATTIVA</strong>. Accesso permanente sbloccato.";
-        badge.textContent = "PRO LIFETIME";
-        badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold uppercase";
+        banner.className = "bg-emerald-950/80 border-b border-emerald-500/20 py-2 px-4 text-center text-xs text-emerald-300 flex items-center justify-center gap-3 sticky top-0 z-50";
+        bannerText.innerHTML = "✨ Licenza Lifetime Pro Attiva. Accesso permanente illimitato.";
+        if (hasKeyBtn) hasKeyBtn.classList.add('hidden');
+        if (activateKeyBtn) activateKeyBtn.classList.add('hidden');
+        if (buyCheckoutBtn) buyCheckoutBtn.classList.add('hidden');
+        if (proActiveBadge) proActiveBadge.classList.remove('hidden');
+        if (badge) {
+          badge.textContent = "PRO LIFETIME";
+          badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold uppercase";
+        }
         return;
       }
+
+      if (hasKeyBtn) hasKeyBtn.classList.remove('hidden');
+      if (activateKeyBtn) activateKeyBtn.classList.remove('hidden');
+      if (buyCheckoutBtn) buyCheckoutBtn.classList.remove('hidden');
+      if (proActiveBadge) proActiveBadge.classList.add('hidden');
+
       const daysLeft = Math.max(0, 7 - Math.floor((Date.now() - state.trialStartedAt) / (1000 * 60 * 60 * 24)));
+      banner.className = "bg-gradient-to-r from-violet-900/60 via-indigo-900/60 to-violet-900/60 border-b border-violet-500/20 py-2 px-4 text-center text-xs text-violet-200 flex items-center justify-center gap-3 backdrop-blur-md sticky top-0 z-50";
       bannerText.innerHTML = daysLeft > 0 ? `⚡ Stai usando la <strong>Demo Interattiva (${daysLeft} giorni rimasti)</strong>` : `⚠️ Periodo di prova terminato! Effettua l'upgrade a $2.99.`;
-      badge.textContent = daysLeft > 0 ? `${daysLeft}D TRIAL` : "EXPIRED";
+      if (badge) {
+        badge.textContent = daysLeft > 0 ? `${daysLeft}D TRIAL` : "EXPIRED";
+        badge.className = "text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold uppercase";
+      }
     }
 
     function openLicenseModal() { document.getElementById('licenseModal').classList.remove('hidden'); }
@@ -256,6 +292,35 @@
         msg.classList.remove('hidden');
       }
     }
+
+    // GESTIONE FULLSCREEN
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn("Fullscreen request error:", err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function updateFullscreenIcon() {
+      const icon = document.getElementById('fullscreenIcon');
+      const btn = document.getElementById('fullscreenBtn');
+      if (!icon || !btn) return;
+      if (document.fullscreenElement) {
+        icon.setAttribute('data-lucide', 'minimize');
+        btn.title = "Esci da Schermo Intero";
+      } else {
+        icon.setAttribute('data-lucide', 'maximize');
+        btn.title = "Schermo Intero";
+      }
+      lucide.createIcons();
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
 
     function updateClock() {
       const now = new Date();
