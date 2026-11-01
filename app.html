@@ -19,6 +19,8 @@
   </script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+  <!-- YouTube IFrame Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <style>
     .custom-scroll::-webkit-scrollbar { width: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
@@ -81,19 +83,42 @@
     
     <!-- COLONNA SINISTRA: Timer & Ranghi -->
     <div class="lg:col-span-7 flex flex-col gap-5">
+      <!-- FOCUS TIMER CARD -->
       <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
           <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
             <i data-lucide="timer" class="w-5 h-5 text-violet-400"></i> Focus Timer
           </h2>
-          <div class="flex gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
-            <button onclick="setTimerPreset(25)" class="preset-btn px-3 py-1 rounded-lg text-slate-300 bg-slate-800 font-medium" data-min="25">25m</button>
-            <button onclick="setTimerPreset(50)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium" data-min="50">50m</button>
-            <button onclick="setTimerPreset(90)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium" data-min="90">90m</button>
-            <button onclick="setTimerPreset(5)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium" data-min="5">5m</button>
+          <!-- Preset Buttons + Custom Button -->
+          <div class="flex flex-wrap gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs">
+            <button onclick="setTimerPreset(25)" class="preset-btn px-3 py-1 rounded-lg text-slate-300 bg-slate-800 font-medium transition" data-min="25">25m</button>
+            <button onclick="setTimerPreset(50)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium transition" data-min="50">50m</button>
+            <button onclick="setTimerPreset(90)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium transition" data-min="90">90m</button>
+            <button onclick="setTimerPreset(5)" class="preset-btn px-3 py-1 rounded-lg text-slate-400 font-medium transition" data-min="5">5m</button>
+            <button id="customTimerBtn" onclick="toggleCustomTimerInput()" class="preset-btn px-3 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition">
+              <i data-lucide="sliders" class="w-3 h-3"></i>
+              <span>Custom</span>
+            </button>
           </div>
         </div>
 
+        <!-- Box Input Personalizzato (a comparsa rapida) -->
+        <div id="customTimerBox" class="hidden my-2 p-3 bg-slate-950/90 border border-violet-500/30 rounded-xl flex items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2 flex-1">
+            <span class="text-slate-300 font-medium">Minuti Personalizzati:</span>
+            <input type="number" id="customTimerInput" min="1" max="360" placeholder="es. 40" 
+                   onkeydown="if(event.key==='Enter') applyCustomTimer()" 
+                   class="w-24 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-white font-mono font-bold focus:outline-none focus:border-violet-500 text-center">
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="applyCustomTimer()" class="px-3.5 py-1 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-lg transition active:scale-95 shadow-sm">
+              Applica
+            </button>
+            <button onclick="toggleCustomTimerInput(false)" class="p-1 text-slate-400 hover:text-white transition">✕</button>
+          </div>
+        </div>
+
+        <!-- Timer Circle SVG -->
         <div class="flex flex-col items-center justify-center my-4 relative">
           <div class="relative w-56 h-56 flex items-center justify-center">
             <svg class="w-full h-full transform -rotate-90">
@@ -111,16 +136,17 @@
 
         <div class="flex items-center justify-center gap-4">
           <button id="toggleTimerBtn" onclick="toggleTimer()" 
-                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-lg hover:brightness-110 transition">
+                  class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-sm shadow-lg hover:brightness-110 transition active:scale-95">
             <i id="toggleTimerIcon" data-lucide="play" class="w-4 h-4"></i>
             <span id="toggleTimerText">Inizia Sessione</span>
           </button>
-          <button onclick="resetTimer()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+          <button onclick="resetTimer()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Resetta Timer">
             <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
 
+      <!-- RANGO DI STUDIO & GAMIFICATION -->
       <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl">
         <div class="flex items-center justify-between mb-3">
           <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
@@ -154,20 +180,36 @@
       </div>
     </div>
 
-    <!-- COLONNA DESTRA: 40Hz Audio & Task -->
+    <!-- COLONNA DESTRA: Audio Focus (40Hz Synth / YouTube Audio) & Task -->
     <div class="lg:col-span-5 flex flex-col gap-5">
+      
+      <!-- AUDIO FOCUS MODULE (TABS: 40Hz Nativo / YouTube Audio) -->
       <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-full bg-violet-400 animate-ping"></div> 40 Hz Gamma Player
-          </h2>
-          <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-violet-300 font-mono">Real-Time</span>
+        
+        <!-- Header con selettore Tab -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div id="audioWaveIndicator" class="w-2.5 h-2.5 rounded-full bg-violet-400"></div>
+            <h2 class="font-bold text-slate-200 text-base">Audio Focus</h2>
+          </div>
+          <!-- Tabs Switcher -->
+          <div class="flex p-1 bg-slate-950/80 rounded-xl border border-slate-800 text-xs">
+            <button id="tabSynthBtn" onclick="switchAudioTab('synth')" class="px-2.5 py-1 rounded-lg bg-violet-600 text-white font-medium transition">
+              40Hz Nativo
+            </button>
+            <button id="tabYtBtn" onclick="switchAudioTab('yt')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition flex items-center gap-1.5">
+              <i data-lucide="youtube" class="w-3.5 h-3.5 text-rose-500"></i>
+              <span>YouTube Audio</span>
+            </button>
+          </div>
         </div>
-        <div class="h-20 w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 mb-4 flex items-center justify-center relative">
-          <canvas id="visualizerCanvas" class="w-full h-full"></canvas>
-          <div id="audioStatusPlaceholder" class="absolute text-xs text-slate-500 font-medium">Audio Spento</div>
-        </div>
-        <div class="space-y-3">
+
+        <!-- PANNELLO 1: SINTETIZZATORE 40HZ NATIVO -->
+        <div id="synthAudioPanel" class="space-y-3">
+          <div class="h-20 w-full bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center relative">
+            <canvas id="visualizerCanvas" class="w-full h-full"></canvas>
+            <div id="audioStatusPlaceholder" class="absolute text-xs text-slate-500 font-medium">Audio Spento</div>
+          </div>
           <button id="toggleAudioBtn" onclick="toggleAudio()" 
                   class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-violet-600 text-white font-semibold text-xs transition border border-slate-700">
             Avvia Onde 40 Hz
@@ -181,11 +223,69 @@
           </div>
           <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
             <span class="text-xs text-slate-200">Rumore Marrone (Deep Masking)</span>
-            <input type="checkbox" id="brownNoiseToggle" onchange="toggleBrownNoise(this.checked)" class="accent-violet-600">
+            <input type="checkbox" id="brownNoiseToggle" onchange="toggleBrownNoise(this.checked)" class="accent-violet-600 cursor-pointer">
           </div>
         </div>
+
+        <!-- PANNELLO 2: YOUTUBE SOLO AUDIO -->
+        <div id="ytAudioPanel" class="hidden space-y-3">
+          <div>
+            <div class="flex justify-between items-center text-xs text-slate-400 mb-1.5">
+              <label for="ytUrlInput" class="font-medium text-slate-300">Link o ID Video YouTube</label>
+              <span class="text-[10px] text-violet-400 font-mono">Audio-Only</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="ytUrlInput" placeholder="Incolla link YouTube (es. Lo-Fi, 40Hz, Rain)..." 
+                     class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-violet-500">
+              <button onclick="loadAndPlayYoutube()" class="px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-xs transition active:scale-95 shadow-sm whitespace-nowrap">
+                Carica
+              </button>
+            </div>
+          </div>
+
+          <!-- Chip Suggeriti Rapidi -->
+          <div class="flex flex-wrap items-center gap-1.5 text-[11px] pt-0.5">
+            <span class="text-slate-500 text-[10px]">Suggeriti:</span>
+            <button onclick="setYtPreset('WPni755-Krg')" class="px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-violet-300 hover:border-violet-500/50 transition">40Hz Binaural</button>
+            <button onclick="setYtPreset('jfKfPfyJRdk')" class="px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-violet-300 hover:border-violet-500/50 transition">Lofi Beats</button>
+            <button onclick="setYtPreset('wSD_vGz9L-4')" class="px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-violet-300 hover:border-violet-500/50 transition">Brown Noise</button>
+          </div>
+
+          <!-- Box Controlli Player YouTube -->
+          <div class="p-3 bg-slate-950/80 border border-slate-800 rounded-xl space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 truncate flex-1 mr-2">
+                <div id="ytIndicator" class="w-2 h-2 rounded-full bg-slate-600 shrink-0"></div>
+                <span id="ytTitleDisplay" class="text-slate-300 truncate text-[11px]">40Hz Binaural Beats Study</span>
+              </div>
+              <span id="ytStatusBadge" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono shrink-0">Inattivo</span>
+            </div>
+
+            <!-- Bottoni Play/Pausa e Stop -->
+            <div class="flex items-center gap-2">
+              <button id="ytToggleBtn" onclick="toggleYoutubePlayback()" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-violet-600 text-white font-semibold text-xs transition border border-slate-700 flex items-center justify-center gap-2 active:scale-95">
+                <i id="ytPlayIcon" data-lucide="play" class="w-3.5 h-3.5"></i>
+                <span id="ytToggleText">Riproduci Audio</span>
+              </button>
+              <button onclick="stopYoutubePlayback()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition border border-slate-700" title="Arresta">
+                <i data-lucide="square" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
+            <!-- Slider Volume YouTube -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-slate-400">
+                <span>Volume YouTube</span>
+                <span id="ytVolumeVal" class="font-mono">70%</span>
+              </div>
+              <input id="ytVolumeSlider" type="range" min="0" max="100" step="1" value="70" oninput="setYtVolume(this.value)" class="w-full accent-violet-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+            </div>
+          </div>
+        </div>
+
       </div>
 
+      <!-- OBIETTIVI / TO-DO LIST -->
       <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/90 rounded-2xl p-6 shadow-xl flex-1 flex flex-col">
         <div class="flex items-center justify-between mb-3">
           <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
@@ -202,6 +302,11 @@
     </div>
 
   </main>
+
+  <!-- CONTENITORE NASCOSTO YOUTUBE (Off-screen Audio-Only) -->
+  <div style="position: absolute; width: 1px; height: 1px; left: -9999px; top: -9999px; overflow: hidden; pointer-events: none;">
+    <div id="ytPlayerContainer"></div>
+  </div>
 
   <!-- MODALE LICENSE KEY -->
   <div id="licenseModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -347,29 +452,93 @@
       }
     }
 
+    // FOCUS TIMER ENGINE & PRESET / CUSTOM
     let timerDuration = 25 * 60, timerTimeLeft = 25 * 60, timerInterval = null, isTimerRunning = false, elapsed = 0;
+
     function setTimerPreset(m) {
       if (isTimerRunning) toggleTimer();
       timerDuration = m * 60; timerTimeLeft = timerDuration; elapsed = 0;
       document.querySelectorAll('.preset-btn').forEach(b => {
-        if (parseInt(b.getAttribute('data-min')) === m) { b.classList.add('bg-slate-800', 'text-white'); b.classList.remove('text-slate-400'); }
-        else { b.classList.remove('bg-slate-800', 'text-white'); b.classList.add('text-slate-400'); }
+        if (parseInt(b.getAttribute('data-min')) === m) { 
+          b.classList.add('bg-slate-800', 'text-white'); 
+          b.classList.remove('text-slate-400'); 
+        } else { 
+          b.classList.remove('bg-slate-800', 'text-white'); 
+          b.classList.add('text-slate-400'); 
+        }
       });
+      const customBtn = document.getElementById('customTimerBtn');
+      if (customBtn) {
+        customBtn.classList.remove('bg-slate-800', 'text-white');
+        customBtn.classList.add('text-slate-400');
+        customBtn.querySelector('span').textContent = 'Custom';
+      }
+      toggleCustomTimerInput(false);
+      document.getElementById('sessionStatus').textContent = "Pronto al Flow";
       updateTimerDisplay();
     }
+
+    function toggleCustomTimerInput(forceShow) {
+      const box = document.getElementById('customTimerBox');
+      if (!box) return;
+      const isHidden = box.classList.contains('hidden');
+      const shouldShow = forceShow !== undefined ? forceShow : isHidden;
+      if (shouldShow) {
+        box.classList.remove('hidden');
+        document.getElementById('customTimerInput').focus();
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    function applyCustomTimer() {
+      const input = document.getElementById('customTimerInput');
+      const val = parseInt(input.value, 10);
+      if (isNaN(val) || val <= 0 || val > 360) {
+        alert("Inserisci un numero di minuti valido (tra 1 e 360).");
+        return;
+      }
+      setCustomTimer(val);
+      toggleCustomTimerInput(false);
+    }
+
+    function setCustomTimer(minutes) {
+      if (isTimerRunning) toggleTimer();
+      timerDuration = minutes * 60;
+      timerTimeLeft = timerDuration;
+      elapsed = 0;
+
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        b.classList.remove('bg-slate-800', 'text-white');
+        b.classList.add('text-slate-400');
+      });
+      const customBtn = document.getElementById('customTimerBtn');
+      if (customBtn) {
+        customBtn.classList.add('bg-slate-800', 'text-white');
+        customBtn.classList.remove('text-slate-400');
+        customBtn.querySelector('span').textContent = `${minutes}m`;
+      }
+      document.getElementById('sessionStatus').textContent = "Pronto al Flow";
+      updateTimerDisplay();
+    }
+
     function updateTimerDisplay() {
-      const min = Math.floor(timerTimeLeft / 60).toString().padStart(2, '0'), sec = (timerTimeLeft % 60).toString().padStart(2, '0');
+      const min = Math.floor(timerTimeLeft / 60).toString().padStart(2, '0');
+      const sec = (timerTimeLeft % 60).toString().padStart(2, '0');
       document.getElementById('timerDisplay').textContent = `${min}:${sec}`;
       document.getElementById('timerProgress').style.strokeDashoffset = 596.9 - (timerTimeLeft / timerDuration) * 596.9;
     }
+
     function toggleTimer() {
       if (isTimerRunning) {
         clearInterval(timerInterval); isTimerRunning = false;
         document.getElementById('toggleTimerText').textContent = "Riprendi";
+        document.getElementById('toggleTimerIcon').setAttribute('data-lucide', 'play');
         document.getElementById('sessionStatus').textContent = "In Pausa";
       } else {
         isTimerRunning = true;
         document.getElementById('toggleTimerText').textContent = "Pausa";
+        document.getElementById('toggleTimerIcon').setAttribute('data-lucide', 'pause');
         document.getElementById('sessionStatus').textContent = "Focus Attivo";
         timerInterval = setInterval(() => {
           if (timerTimeLeft > 0) {
@@ -385,14 +554,54 @@
       }
       lucide.createIcons();
     }
+
     function resetTimer() {
       if (isTimerRunning) toggleTimer();
       timerTimeLeft = timerDuration; elapsed = 0;
       document.getElementById('toggleTimerText').textContent = "Inizia Sessione";
+      document.getElementById('toggleTimerIcon').setAttribute('data-lucide', 'play');
       document.getElementById('sessionStatus').textContent = "Pronto al Flow";
       updateTimerDisplay(); lucide.createIcons();
     }
 
+    // TAB SWITCHER: 40HZ NATIVO VS YOUTUBE AUDIO
+    let activeAudioTab = 'synth';
+    function switchAudioTab(tab) {
+      activeAudioTab = tab;
+      const synthBtn = document.getElementById('tabSynthBtn');
+      const ytBtn = document.getElementById('tabYtBtn');
+      const synthPanel = document.getElementById('synthAudioPanel');
+      const ytPanel = document.getElementById('ytAudioPanel');
+      const waveDot = document.getElementById('audioWaveIndicator');
+
+      if (tab === 'synth') {
+        synthBtn.className = "px-2.5 py-1 rounded-lg bg-violet-600 text-white font-medium transition";
+        ytBtn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition flex items-center gap-1.5";
+        synthPanel.classList.remove('hidden');
+        ytPanel.classList.add('hidden');
+        if (isAudioOn) {
+          waveDot.classList.add('animate-ping');
+        } else {
+          waveDot.classList.remove('animate-ping');
+        }
+      } else {
+        ytBtn.className = "px-2.5 py-1 rounded-lg bg-violet-600 text-white font-medium transition flex items-center gap-1.5";
+        synthBtn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium transition";
+        synthPanel.classList.add('hidden');
+        ytPanel.classList.remove('hidden');
+        if (isYtPlaying) {
+          waveDot.classList.add('animate-ping');
+        } else {
+          waveDot.classList.remove('animate-ping');
+        }
+        if (document.getElementById('ytUrlInput').value === '') {
+          document.getElementById('ytUrlInput').value = 'https://youtu.be/WPni755-Krg';
+        }
+      }
+      lucide.createIcons();
+    }
+
+    // AUDIO NATIVO 40 HZ BINAURAL & RUMORE MARRONE
     let audioCtx, oscL, oscR, masterGain, brownGain, isAudioOn = false, analyser, anim;
     function initAudio() {
       if (audioCtx) return;
@@ -421,11 +630,17 @@
         masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.05); isAudioOn = false;
         document.getElementById('toggleAudioBtn').textContent = "Avvia Onde 40 Hz";
         document.getElementById('audioStatusPlaceholder').classList.remove('hidden');
+        if (activeAudioTab === 'synth') document.getElementById('audioWaveIndicator').classList.remove('animate-ping');
         cancelAnimationFrame(anim);
       } else {
+        // Se YouTube sta suonando, mettilo in pausa per non accavallare
+        if (isYtPlaying && ytPlayer && ytPlayer.pauseVideo) {
+          ytPlayer.pauseVideo();
+        }
         masterGain.gain.setTargetAtTime(parseFloat(document.getElementById('volumeSlider').value), audioCtx.currentTime, 0.05); isAudioOn = true;
         document.getElementById('toggleAudioBtn').textContent = "Spegni Onde 40 Hz";
         document.getElementById('audioStatusPlaceholder').classList.add('hidden');
+        if (activeAudioTab === 'synth') document.getElementById('audioWaveIndicator').classList.add('animate-ping');
         drawCanvas();
       }
     }
@@ -442,6 +657,187 @@
       loop();
     }
 
+    // YOUTUBE AUDIO-ONLY STREAM PLAYER INTEGRATION
+    let ytPlayer = null;
+    let isYtApiReady = false;
+    let currentYtVideoId = 'WPni755-Krg';
+    let isYtPlaying = false;
+
+    function onYouTubeIframeAPIReady() {
+      isYtApiReady = true;
+      initYoutubePlayer(currentYtVideoId);
+    }
+
+    function initYoutubePlayer(videoId) {
+      if (!window.YT || !window.YT.Player) return;
+      if (ytPlayer && ytPlayer.destroy) {
+        try { ytPlayer.destroy(); } catch(e){}
+      }
+      ytPlayer = new YT.Player('ytPlayerContainer', {
+        height: '100',
+        width: '100',
+        videoId: videoId,
+        playerVars: {
+          playsinline: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          rel: 0,
+          autoplay: 0
+        },
+        events: {
+          onReady: onYtPlayerReady,
+          onStateChange: onYtPlayerStateChange,
+          onError: onYtPlayerError
+        }
+      });
+    }
+
+    function onYtPlayerReady(event) {
+      const vol = parseInt(document.getElementById('ytVolumeSlider').value, 10) || 70;
+      event.target.setVolume(vol);
+      updateYtTrackInfo();
+    }
+
+    function onYtPlayerStateChange(event) {
+      const statusBadge = document.getElementById('ytStatusBadge');
+      const indicator = document.getElementById('ytIndicator');
+      const playIcon = document.getElementById('ytPlayIcon');
+      const toggleText = document.getElementById('ytToggleText');
+      const waveDot = document.getElementById('audioWaveIndicator');
+
+      if (event.data === YT.PlayerState.PLAYING) {
+        isYtPlaying = true;
+        statusBadge.textContent = "In Riproduzione";
+        statusBadge.className = "text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono";
+        indicator.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0";
+        toggleText.textContent = "Pausa YouTube";
+        playIcon.setAttribute('data-lucide', 'pause');
+        if (activeAudioTab === 'yt') waveDot.classList.add('animate-ping');
+        updateYtTrackInfo();
+      } else if (event.data === YT.PlayerState.PAUSED) {
+        isYtPlaying = false;
+        statusBadge.textContent = "In Pausa";
+        statusBadge.className = "text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono";
+        indicator.className = "w-2 h-2 rounded-full bg-amber-400 shrink-0";
+        toggleText.textContent = "Riprendi YouTube";
+        playIcon.setAttribute('data-lucide', 'play');
+        if (activeAudioTab === 'yt') waveDot.classList.remove('animate-ping');
+      } else if (event.data === YT.PlayerState.ENDED) {
+        isYtPlaying = false;
+        statusBadge.textContent = "Terminato";
+        statusBadge.className = "text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono";
+        indicator.className = "w-2 h-2 rounded-full bg-slate-600 shrink-0";
+        toggleText.textContent = "Riproduci Audio";
+        playIcon.setAttribute('data-lucide', 'play');
+        if (activeAudioTab === 'yt') waveDot.classList.remove('animate-ping');
+      } else if (event.data === YT.PlayerState.BUFFERING) {
+        statusBadge.textContent = "Buffering...";
+        statusBadge.className = "text-[10px] px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-mono";
+        indicator.className = "w-2 h-2 rounded-full bg-violet-400 animate-ping shrink-0";
+      }
+      lucide.createIcons();
+    }
+
+    function onYtPlayerError() {
+      const statusBadge = document.getElementById('ytStatusBadge');
+      statusBadge.textContent = "Non Disponibile";
+      statusBadge.className = "text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-mono";
+    }
+
+    function extractYoutubeId(input) {
+      if (!input) return null;
+      input = input.trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(input)) {
+        return input;
+      }
+      const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = input.match(regExp);
+      return match ? match[1] : null;
+    }
+
+    function loadAndPlayYoutube() {
+      const input = document.getElementById('ytUrlInput');
+      const val = input.value.trim();
+      if (!val) {
+        alert("Incolla un URL o Video ID di YouTube.");
+        return;
+      }
+      const videoId = extractYoutubeId(val);
+      if (!videoId) {
+        alert("Formato URL non valido. Inserisci un link YouTube valido.");
+        return;
+      }
+      // Spegni il synth nativo se attivo
+      if (isAudioOn) toggleAudio();
+
+      currentYtVideoId = videoId;
+      if (!ytPlayer || !ytPlayer.loadVideoById) {
+        initYoutubePlayer(videoId);
+      } else {
+        ytPlayer.loadVideoById(videoId);
+      }
+    }
+
+    function setYtPreset(id) {
+      document.getElementById('ytUrlInput').value = `https://youtu.be/${id}`;
+      currentYtVideoId = id;
+      if (isAudioOn) toggleAudio();
+
+      if (!ytPlayer || !ytPlayer.loadVideoById) {
+        initYoutubePlayer(id);
+      } else {
+        ytPlayer.loadVideoById(id);
+      }
+    }
+
+    function toggleYoutubePlayback() {
+      if (!ytPlayer || !ytPlayer.getPlayerState) {
+        initYoutubePlayer(currentYtVideoId);
+        return;
+      }
+      // Se il synth nativo sta suonando, mettilo in pausa
+      if (isAudioOn) toggleAudio();
+
+      const state = ytPlayer.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) {
+        ytPlayer.pauseVideo();
+      } else {
+        ytPlayer.playVideo();
+      }
+    }
+
+    function stopYoutubePlayback() {
+      if (ytPlayer && ytPlayer.stopVideo) {
+        ytPlayer.stopVideo();
+        isYtPlaying = false;
+        document.getElementById('ytStatusBadge').textContent = "Inattivo";
+        document.getElementById('ytStatusBadge').className = "text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono";
+        document.getElementById('ytIndicator').className = "w-2 h-2 rounded-full bg-slate-600 shrink-0";
+        document.getElementById('ytToggleText').textContent = "Riproduci Audio";
+        document.getElementById('ytPlayIcon').setAttribute('data-lucide', 'play');
+        if (activeAudioTab === 'yt') document.getElementById('audioWaveIndicator').classList.remove('animate-ping');
+        lucide.createIcons();
+      }
+    }
+
+    function setYtVolume(val) {
+      document.getElementById('ytVolumeVal').textContent = `${val}%`;
+      if (ytPlayer && ytPlayer.setVolume) {
+        ytPlayer.setVolume(val);
+      }
+    }
+
+    function updateYtTrackInfo() {
+      if (ytPlayer && ytPlayer.getVideoData) {
+        const data = ytPlayer.getVideoData();
+        if (data && data.title) {
+          document.getElementById('ytTitleDisplay').textContent = data.title;
+        }
+      }
+    }
+
+    // OBIETTIVI / SESSION GOALS
     function renderGoals() {
       const el = document.getElementById('goalsList'); el.innerHTML = ''; let done = 0;
       state.goals.forEach(g => {
@@ -457,7 +853,10 @@
     function toggleGoal(id) { const g = state.goals.find(x => x.id === id); if (g) { g.done = !g.done; if (g.done) addXP(10); saveState(); renderGoals(); } }
     function deleteGoal(id) { state.goals = state.goals.filter(x => x.id !== id); saveState(); renderGoals(); }
 
-    window.addEventListener('DOMContentLoaded', () => { loadState(); lucide.createIcons(); });
+    window.addEventListener('DOMContentLoaded', () => { 
+      loadState(); 
+      lucide.createIcons(); 
+    });
   </script>
 </body>
 </html>
